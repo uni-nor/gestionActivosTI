@@ -176,8 +176,7 @@ rutas.get('/listar-activos',async (req,res)=>{
 rutas.get('/listar-cantidad-activos',async (req,res)=>{
     try {
         console.log(req.params.texto);
-        // const cantidadActivos=await ActivoModel.find({estado: new RegExp("ACTIVO", 'i')}).countDocuments();
-        const cantidadActivos=await ActivoModel.find().countDocuments();
+        const cantidadActivos=await ActivoModel.find().countDocuments({estado:"ACTIVO"});
         res.json("la cantidad de activos en estado ACTIVO es:"+cantidadActivos);
     } catch (error) {
         res.status(500).json({menssaje:error.message})
