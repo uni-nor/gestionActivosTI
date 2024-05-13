@@ -12,7 +12,11 @@ const activoSchema=new mongoose.Schema({
     fecha_compra:Date,
     fecha_baja:Date,
     estado:String
-});
+},
+{timestamps:false,
+versionKey:false
+}
+);
 
 const ActivoModel=mongoose.model("Activo", activoSchema,"activo");
 module.exports=ActivoModel;
