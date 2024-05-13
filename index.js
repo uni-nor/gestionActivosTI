@@ -7,6 +7,7 @@ require("dotenv").config();
 const app=express();
 //rutas
 const activoRutas=require("./routes/activoRutas");
+const titularRutas=require("./routes/titularRutas");
 //configuracion de entorno (enviroment)
 const PORT=process.env.PORT||6000;
 //conexion mongo
@@ -23,3 +24,4 @@ mongoose.connect(MONGO_URI).then(
 ).catch(error=>console.log("error de conexion",error));
 
 app.use("/activos",activoRutas);
+app.use("/titular",titularRutas);

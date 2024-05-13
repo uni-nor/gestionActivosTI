@@ -103,6 +103,85 @@ rutas.delete("/eliminar/:id", async (req,res)=>{
     }
 });
 
-//5.- 
+//5. obtener una activos por su ID
+rutas.get('/listar-porid/:id', async (req, res) => {
+    try {
+        const activo = await ActivoModel.findById(req.params.id);
+        if (!activo)
+            return res.status(404).json({ mensaje : 'Activo no encontrada!!!'});
+        else 
+            return res.json(activo);
+    } catch(error) {
+        res.status(500).json({ mensaje :  error.message})
+    }
+});
+
+//6.- listar todos los activos por tipo o marca de manera exacta
+rutas.get('/listar-por-tipo-marca/:tipo/:marca',async (req,res)=>{
+    try {
+        const listaActivos=await ActivoModel.find({$or:[ { tipo:req.params.tipo }, {marca:req.params.marca}] });
+        res.json(listaActivos);
+    } catch (error) {
+        res.status(500).json({menssaje:error.message})
+    }
+});
+
+
+//7.- listar todos los activos que contengan el texto ingresado en tipo o marca (ambos)
+rutas.get('/listar-por-tipo-marca-texto/:texto',async (req,res)=>{
+    try {
+        console.log(req.params.texto);
+        const listaActivos=await ActivoModel.find({$and:[ { tipo: new RegExp(req.params.texto, 'i') }, 
+                                                          {marca:new RegExp(req.params.texto, 'i')}] });
+        res.json(listaActivos);
+    } catch (error) {
+        res.status(500).json({menssaje:error.message})
+    }
+});
+        
+
+//8.- obtener lista de activos que tenga el texto de busqueda en cualquiera de sus campos
+rutas.get('/listar-busqueda/:texto',async (req,res)=>{
+    try {
+        console.log(req.params.texto);
+        const listaActivos=await ActivoModel.find({$or:[ { tipo:new RegExp(req.params.texto, 'i') }, 
+                                                        { descripcion:new RegExp(req.params.texto, 'i')},
+                                                        { marca:new RegExp(req.params.texto, 'i')},
+                                                        { modelo:new RegExp(req.params.texto, 'i')},
+                                                        { caracteristicas:new RegExp(req.params.texto, 'i')},
+                                                        { color:new RegExp(req.params.texto, 'i')},
+                                                        { estado:new RegExp(req.params.texto, 'i')},
+                                                    ] 
+                                                  });
+          res.json(listaActivos);
+    } catch (error) {
+        res.status(500).json({menssaje:error.message})
+    }
+});
+
+
+//9.- obtener los activos diferentes al estado inactivo
+rutas.get('/listar-activos',async (req,res)=>{
+    try {
+        console.log(req.params.texto);
+        const listaActivos=await ActivoModel.find({estado:{$ne:"INACTIVO"}});
+        res.json(listaActivos);
+    } catch (error) {
+        res.status(500).json({menssaje:error.message})
+    }
+});
+
+
+//10.- obtener la cantidad de activos 
+rutas.get('/listar-cantidad-activos',async (req,res)=>{
+    try {
+        console.log(req.params.texto);
+        // const cantidadActivos=await ActivoModel.find({estado: new RegExp("ACTIVO", 'i')}).countDocuments();
+        const cantidadActivos=await ActivoModel.find().countDocuments();
+        res.json("la cantidad de activos en estado ACTIVO es:"+cantidadActivos);
+    } catch (error) {
+        res.status(500).json({menssaje:error.message})
+    }
+});
 
 module.exports=rutas;
