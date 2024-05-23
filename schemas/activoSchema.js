@@ -4,7 +4,6 @@ const activoSchema=new mongoose.Schema({
     correlativo:Number,
     codigo:String,
     tipo:String,
-    tipo:String,
     descripcion:String,
     marca:String,
     modelo:String,

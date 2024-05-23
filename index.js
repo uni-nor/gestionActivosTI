@@ -2,12 +2,15 @@
 const express=require('express');
 const mongoose=require("mongoose");
 require("dotenv").config();
+const auth=require("./middleware/auth");
 
 //CONSTANTES
 const app=express();
 //rutas
+const usuarioRutas=require("./routes/usuarioRutas");
 const activoRutas=require("./routes/activoRutas");
 const titularRutas=require("./routes/titularRutas");
+
 //configuracion de entorno (enviroment)
 const PORT=process.env.PORT||6000;
 //conexion mongo
@@ -23,5 +26,7 @@ mongoose.connect(MONGO_URI).then(
     }
 ).catch(error=>console.log("error de conexion",error));
 
-app.use("/activos",activoRutas);
+
+app.use("/usuario",usuarioRutas)
+app.use("/activos",auth,activoRutas);
 app.use("/titular",titularRutas);
