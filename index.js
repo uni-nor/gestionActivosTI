@@ -11,6 +11,7 @@ const usuarioRutas=require("./routes/usuarioRutas");
 const activoRutas=require("./routes/activoRutas");
 const titularRutas=require("./routes/titularRutas");
 const ubicacionRutas=require("./routes/ubicacionRutas");
+const seguimientoRutas=require("./routes/seguimientoRutas");
 
 //configuracion de entorno (enviroment)
 const PORT=process.env.PORT||6000;
@@ -32,3 +33,5 @@ app.use("/usuario",usuarioRutas)
 app.use("/activos",auth,activoRutas);
 app.use("/titular",auth,titularRutas);
 app.use("/ubicacion",auth,ubicacionRutas);
+app.use("/seguimiento",auth,seguimientoRutas);
+
