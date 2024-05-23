@@ -2,7 +2,8 @@ const mongoose=require("mongoose");
 // const ubicacionSchema=require("../schemas/ubicacionSchema");
 // const usuarioSchema=require("../schemas/usuarioSchema");
 const seguimientoSchema=new mongoose.Schema({
-    fecha:String,
+    activo:{ type: mongoose.Schema.ObjectId, ref: "Activo" },
+    fecha:Date,
     ubicacion_origen:{ type: mongoose.Schema.ObjectId, ref: "Ubicacion" },
     ubicacion_destino:{ type: mongoose.Schema.ObjectId, ref: "Ubicacion" },
     tipo_seguimiento:String,

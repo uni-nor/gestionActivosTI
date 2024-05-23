@@ -1,4 +1,7 @@
 const SeguimientoModel = require('../model/Seguimiento');
+const ActivoModel = require('../model/Activo');
+const UbicacionModel = require('../model/Ubicacion');
+const UsuarioModel = require('../model/Usuario');
 //=====================================================================
 //1.- GET LISTAR
 //=====================================================================
@@ -16,6 +19,7 @@ const listarSeguimientos =async (req,res)=>{
 const crearSeguimiento =async (req,res)=>{
     const seg=req.body;
     const seguimiento=new SeguimientoModel({
+        activo:seg.activo,
         fecha:seg.fecha,
         ubicacion_origen:seg.ubicacion_origen,
         ubicacion_destino:seg.ubicacion_destino,
@@ -79,10 +83,53 @@ const obtentenerSeguimientoPorId= async (req, res) => {
     }
 }
 
+
+//=====================================================================
+//5. obtener seguimientos de un activo
+//=====================================================================
+const reporteSeguimientoActivos=async (req, res) => {
+    const {activoId}=req.params;
+    try  {
+        var activos;
+        if(activoId=="todos")
+             activos = await  ActivoModel.find();// obtiene todos los activos
+        else
+            activos = await  ActivoModel.find({_id:activoId});// obtiene el activo especificado
+        const reporte=await Promise.all(
+            activos.map(async (a)=>{
+                const seguimientos=await SeguimientoModel.find({activo:a._id}).populate('ubicacion_origen','nombre').populate('ubicacion_destino','nombre');
+                //const totalPorciones=recetas.reduce((sum,receta)=>sum+receta.porciones,0);
+                const totalSeguimientos=seguimientos.length;
+                return {
+                    activo:{
+                        _id:a._id,
+                        descripcion:a.descripcion,
+                        caracteristicas:a.caracteristicas
+                    },
+                    // totalPorciones,
+                    totalSeguimientos,
+                    seguimientos:seguimientos.map(s=>({
+                         _id:s._id,
+                        fecha:s.fecha.toLocaleDateString('es-CL', { day:"numeric", year:"numeric", month:"short", hour:"numeric",minute:"numeric",second:"numeric"}),
+                        movimiento:s.ubicacion_origen.nombre+" --> "+s.ubicacion_destino.nombre,
+                        descripcion:s.descripcion,
+                    }))
+                }
+            })
+        );
+        res.json({cantidad_activos:activos.length,seguimientoActivos:reporte});
+    } catch (error){
+         res.status(500).json({mensaje: error.message});
+    }
+}
+
+
+//=====================================================================
 module.exports = {
     listarSeguimientos,
     crearSeguimiento,
     modificarSeguimientoPorId,
     eliminarSeguimientoPorId,
-    obtentenerSeguimientoPorId
+    obtentenerSeguimientoPorId,
+    reporteSeguimientoActivos
 }

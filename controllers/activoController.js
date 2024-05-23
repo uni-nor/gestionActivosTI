@@ -64,6 +64,7 @@ const crearActivo =async (req,res)=>{
             // },
             fecha_compra: act.fecha_compra,
             fecha_baja: act.fecha_baja,
+            precio_bs:act.precio_bs,
             estado: act.estado,
             titular:act.titular //asignar el id titular
     });

@@ -11,6 +11,7 @@ const activoSchema=new mongoose.Schema({
     color:String,
     fecha_compra:Date,
     fecha_baja:Date,
+    precio_bs:Number,
     estado:String,
     titular:{ type: mongoose.Schema.ObjectId, ref: "Titular" }
 },

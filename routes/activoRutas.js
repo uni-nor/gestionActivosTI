@@ -27,6 +27,7 @@ rutas.get('/listar-activos',listarActivosActivos);
 rutas.get('/listar-cantidad-activos',obtenerCantidadActivosActivos);
 //R1 obtener activos correspondientes al id de un titular
 rutas.get('/activos-por-titular/:titularId',activosPorTitular);
-//R2
+
+
 
 module.exports=rutas;
