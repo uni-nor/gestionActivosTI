@@ -1,0 +1,44 @@
+const express=require('express');
+const request=require('supertest');
+const titularRutas=require('../../routes/titularRutas');
+const TitularModel=require('../../model/Titular');
+const mongoose=require('mongoose');
+const app=express();
+app.use(express.json());
+app.use('/titulares',titularRutas);
+
+describe('Pruebas unitarias para titulares',()=>{
+    // se ejectua antes de iniciar las pruebas
+    beforeEach(async ()=>{
+        await mongoose.connect('mongodb://127.0.0.1:27017/gestionactivosti',
+        {useNewUrlParser:true,
+        });
+        await  TitularModel.deleteMany({});
+    });
+    afterAll(()=>{
+        return mongoose.connection.close();
+    });
+
+    // 1er test
+    test('deberia traer todas las titulares metodo:GET listar',async()=>{
+        await TitularModel.create({nombre:'Carlos',primer_apellido:'Flores',segundo_apellido:"Choque",sexo:"H",fecha_nacimiento:"1990-04-15"});
+        await TitularModel.create({nombre:'Ruben',primer_apellido:'Bustamante',segundo_apellido:"Montaño",sexo:"H",fecha_nacimiento:"1955-04-15"});
+        // solicitud- request
+        const res=await request(app).get('/titulares/listar');
+        //console.log(res);
+        //verificar la respuesta
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toHaveLength(2);
+    },10000); //tiempo en milisegundos.
+
+// 2do test
+    test('Deberia agregar un nuevo titular, POST: /crear' , async()=>{
+        const nuevoTitular={
+            nombre:'Carlos',primer_apellido:'Flores',segundo_apellido:"Choque",sexo:"H",fecha_nacimiento:"1990-04-15"
+        };
+        const res=await request(app).post('/titulares/crear').send(nuevoTitular);
+        expect(res.statusCode).toEqual(201);
+        expect(res.body.nombre).toEqual(nuevoTitular.nombre);
+    });
+
+});

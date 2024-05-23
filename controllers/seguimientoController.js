@@ -109,7 +109,7 @@ const reporteSeguimientoActivos=async (req, res) => {
                     // totalPorciones,
                     totalSeguimientos,
                     seguimientos:seguimientos.map(s=>({
-                         _id:s._id,
+                            _id:s._id,
                         fecha:s.fecha.toLocaleDateString('es-CL', { day:"numeric", year:"numeric", month:"short", hour:"numeric",minute:"numeric",second:"numeric"}),
                         movimiento:s.ubicacion_origen.nombre+" --> "+s.ubicacion_destino.nombre,
                         descripcion:s.descripcion,
