@@ -1,4 +1,5 @@
 const ActivoModel = require('../model/Activo')
+const TitularModel = require('../model/Titular')
 //=====================================================================
 //1.- GET LISTAR
 //=====================================================================
@@ -15,6 +16,7 @@ const listarActivos = async (req, res) => {
 //=====================================================================
 const crearActivo =async (req,res)=>{
     const act=req.body;
+    console.log(act);
     const activo=new ActivoModel({
             correlativo: act.correlativo,
             codigo: act.codigo,
@@ -62,7 +64,8 @@ const crearActivo =async (req,res)=>{
             // },
             fecha_compra: act.fecha_compra,
             fecha_baja: act.fecha_baja,
-            estado: act.estado
+            estado: act.estado,
+            titular:act.titular //asignar el id titular
     });
     try {
         const nuevoActivo=await activo.save();
@@ -194,6 +197,59 @@ const obtenerCantidadActivosActivos=async (req,res)=>{
     }
 }
 
+
+
+
+//REPORTES 
+//=====================================================================
+//R1 obtener activos correspondientes al id de un titular
+//=====================================================================
+const activosPorTitular= async (req, res) => {
+    const {titularId}=req.params;
+    try  {
+        const titular = await  TitularModel.findById(titularId);
+        if(!titular)
+            return res.status(404).json({mensaje:"titular no encontrado"});
+        const recetas=await ActivoModel.find({titular:titularId}).populate('titular');
+        res.json(recetas);
+    } catch (error){
+        res.status(500).json({mensaje: error.message});
+    }
+}
+
+// //=====================================================================
+// //R2 Sumar porciones de recetas por titulars
+// //=====================================================================
+// rutas.get('/porcionPorTitulares', async (req, res) => {
+//     try  {
+//         const titulars = await  TitulareModel.find();
+//         const reporte=await Promise.all(
+//             titulars.map(async (u)=>{
+//                 const recetas=await ActivoModel.find({titular:u._id});
+//                 const totalPorciones=recetas.reduce((sum,receta)=>sum+receta.porciones,0);
+//                 return {
+//                     u:{
+//                         _id:u._id,
+//                         nombretitular:u.nombretitular
+//                     },
+//                     totalPorciones,
+//                     recetas:recetas.map(r=>({
+//                         _id:r._id,
+//                         nombre:r.nombre,
+//                         porciones:r.porciones
+//                     }))
+//                 }
+//             })
+//         );
+//         res.json(reporte);
+//     } catch (error){
+//         res.status(500).json({mensaje: error.message});
+//     }
+// });
+
+
+
+
 module.exports = {
     listarActivos,
     crearActivo,
@@ -204,5 +260,6 @@ module.exports = {
     listarActivosPorTipoMarcaTexto,
     busquedaPorTexto,
     listarActivosActivos,
-    obtenerCantidadActivosActivos
+    obtenerCantidadActivosActivos,
+    activosPorTitular
 }

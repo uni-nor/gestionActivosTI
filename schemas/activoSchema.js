@@ -11,8 +11,8 @@ const activoSchema=new mongoose.Schema({
     color:String,
     fecha_compra:Date,
     fecha_baja:Date,
-    estado:String
-    //titular_id:{ type: mongoose.Schema.ObjectId, ref: "Titular" }
+    estado:String,
+    titular:{ type: mongoose.Schema.ObjectId, ref: "Titular" }
 },
 {timestamps:false,
 versionKey:false

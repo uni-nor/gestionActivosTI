@@ -3,7 +3,7 @@ const rutas=express.Router();
 const ActivoModel=require("../model/Activo");
 const {listarActivos,    crearActivo,    modificarPorId,    eliminarPorId,    obtentenerActivoPorId,
     listarActivosPorTipoMarca,    listarActivosPorTipoMarcaTexto,    busquedaPorTexto,    
-    listarActivosActivos,    obtenerCantidadActivosActivos}=require("../controllers/activoController");
+    listarActivosActivos,    obtenerCantidadActivosActivos,activosPorTitular}=require("../controllers/activoController");
 
 //1.- listar todos
 rutas.get('/listar',listarActivos);
@@ -25,5 +25,8 @@ rutas.get('/listar-busqueda/:texto',busquedaPorTexto);
 rutas.get('/listar-activos',listarActivosActivos);
 //10.- obtener la cantidad de activos 
 rutas.get('/listar-cantidad-activos',obtenerCantidadActivosActivos);
+//R1 obtener activos correspondientes al id de un titular
+rutas.get('/activos-por-titular/:titularId',activosPorTitular);
+//R2
 
 module.exports=rutas;

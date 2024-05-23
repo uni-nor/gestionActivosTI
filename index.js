@@ -10,6 +10,7 @@ const app=express();
 const usuarioRutas=require("./routes/usuarioRutas");
 const activoRutas=require("./routes/activoRutas");
 const titularRutas=require("./routes/titularRutas");
+const ubicacionRutas=require("./routes/ubicacionRutas");
 
 //configuracion de entorno (enviroment)
 const PORT=process.env.PORT||6000;
@@ -30,3 +31,4 @@ mongoose.connect(MONGO_URI).then(
 app.use("/usuario",usuarioRutas)
 app.use("/activos",auth,activoRutas);
 app.use("/titular",auth,titularRutas);
+app.use("/ubicacion",auth,ubicacionRutas);
