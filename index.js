@@ -29,4 +29,4 @@ mongoose.connect(MONGO_URI).then(
 
 app.use("/usuario",usuarioRutas)
 app.use("/activos",auth,activoRutas);
-app.use("/titular",titularRutas);
+app.use("/titular",auth,titularRutas);

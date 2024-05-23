@@ -2,48 +2,10 @@ const mongoose = require('mongoose')            //paquetes requeridos
 //const validator = require('validator')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-
-const usuarioSchema = mongoose.Schema({            //creamos nuestro esquema de mongoose
-    name: {                                     // Este objeto define las diferentes propiedades del usuarioSchema. 
-        type: String,                           // Mongoose convertirá nuestro usuarioSchema en un documento en la base de datos
-        required: true,                         // y esas propiedades se convertirán en campos en nuestro base de datos.
-        unique:true,
-        trim: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true
-        // ,
-        // validate: value => {
-        //     if (!validator.isEmail(value)) {     // valida si e texto introducido es un email válido
-        //         throw new Error({error: 'Dirección de correo inválida'})
-        //     }
-        // }
-    },
-    password: {
-        type: String,
-        required: true,
-        minLength: 7
-    },
-    tokens: [{                                  // almacenaremos una lista de tokens
-        token: {                                // permite que un usuario inicie sesión en diferentes dispositivos
-            type: String,                       // y una vez que cierra la sesión de un dispositivo, todavía queremos asegurarnos
-            required: true                      // de que todavía estén conectados en otro dispositivo en el que habían iniciado sesión
-        },
-        codigo: {                                // permite que un usuario inicie sesión en diferentes dispositivos
-            type: String,                       // y una vez que cierra la sesión de un dispositivo, todavía queremos asegurarnos
-            required: true                      // de que todavía estén conectados en otro dispositivo en el que habían iniciado sesión
-        }
-    }]
-}
-,{
-   versionKey: false, 
-   timestamps: false,
-});
-
+const usuarioSchema=require('../schemas/usuarioSchema');
+//=====================================================================================================
 //hashear password
+//=====================================================================================================
 usuarioSchema.pre('save', async function (next) {                      // nos permite hacer algo antes de guardar el objeto creado
     // Encriptar el password antes de guardarlo en el model usuario
     const usuario = this
@@ -53,7 +15,9 @@ usuarioSchema.pre('save', async function (next) {                      // nos pe
     next()                                                          //  y es por eso que primero tenemos que verificar si la contraseña se modificó.
 })
 
+//=====================================================================================================
 //firmar jwt y guardar en usuario 
+//=====================================================================================================
 usuarioSchema.methods.generateAuthToken = async function() {
     // Generar un método de autenticación para el usuario
     const usuario = this;
@@ -67,7 +31,9 @@ usuarioSchema.methods.generateAuthToken = async function() {
     return token;                                                    //devolvemos el token
 }
 
+//=====================================================================================================
 //buscar usuario y comparar contraseña
+//=====================================================================================================
 usuarioSchema.statics.findByCredentials = async (email, passwordCandidato) => { //espera dos parámetros, el correo electrónico del usuario y la contraseña
     // Buscar el usuario por email y password.
     const usuario = await Usuario.findOne({ email} )                              ////buscamos un usuario con el correo electrónico proporcionado utilizando el método de búsqueda de mongoose
@@ -83,10 +49,6 @@ usuarioSchema.statics.findByCredentials = async (email, passwordCandidato) => { 
     return ({mensaje:"OK",usuario:usuario})
 }
 
-
-// LOGOUT 
-
-
+//=====================================================================================================
 const Usuario = mongoose.model('Usuario', usuarioSchema,'usuario')                             //creamos un modelo llamado Usuario y le pasamos nuestro esquema de usuario creado
-
 module.exports = Usuario                                                       //exportamos el módulo para que pueda reutilizarse en otros archivos.
