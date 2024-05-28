@@ -208,9 +208,14 @@ const obtenerCantidadActivosActivos=async (req,res)=>{
 const activosPorTitular= async (req, res) => {
     const {titularId}=req.params;
     try  {
+        if(titularId=="todos"){
+            const activos=await ActivoModel.find().populate('titular');
+            return res.json({cantidadActivos:activos.length,activos:activos});
+        }
         const titular = await  TitularModel.findById(titularId);
         if(!titular)
             return res.status(404).json({mensaje:"titular no encontrado"});
+
         const activos=await ActivoModel.find({titular:titularId}).populate('titular');
         return res.json({cantidadActivos:activos.length,activos:activos});
     } catch (error){
